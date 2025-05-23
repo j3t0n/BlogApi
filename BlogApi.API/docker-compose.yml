@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle-xe
+    environment:
+      - ORACLE_PASSWORD=yourpassword
+      - APP_USER=jeton
+      - APP_USER_PASSWORD=Jeton123
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus sys/yourpassword@localhost/XE as sysdba | grep -q '1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  oracle_data:
